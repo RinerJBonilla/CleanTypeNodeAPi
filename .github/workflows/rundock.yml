@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PORT: ${{ secrets.PORT }}
-      TOKEN_SECRET: ${{ TOKEN_SECRET }}
+      TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
       D_HOST: ${{ secrets.D_HOST }}
       D_USER: ${{ secrets.D_USER }}
       D_PASSWORD: ${{ secrets.D_PASSWORD }}
