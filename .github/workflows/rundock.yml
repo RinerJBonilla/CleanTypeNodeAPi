@@ -29,6 +29,6 @@ jobs:
       - name: check docker containers
         run: docker ps
       - name: change docker image
-        run: docker image tag node:latest rainerbonilla/type-node-api:latest
+        run: docker image tag cleantypenodeapi_node:latest rainerbonilla/type-node-api:latest
       - name: push image to dockerhub
         run: docker push rainerbonilla/type-node-api:latest
