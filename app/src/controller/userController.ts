@@ -1,14 +1,17 @@
 import { Request, Response } from "express";
 import UserUseCase from "../use-cases/users/userUseCase";
 import UserAuth from "../utils/UserAuth";
+import ContentMod from "../utils/ContentMod";
 
 export default class UserController {
   private userService: UserUseCase;
   private userAuth: UserAuth;
+  private contentMod: ContentMod;
 
   constructor(userService: UserUseCase) {
     this.userService = userService;
     this.userAuth = new UserAuth();
+    this.contentMod = new ContentMod();
   }
 
   loginUser = async (req: Request, res: Response) => {
@@ -41,8 +44,9 @@ export default class UserController {
     try {
       const genPass = this.userAuth.genPassword(req.body.password);
       req.body.password = genPass;
-      const rep = await this.userService.AddUser(req.body);
-      console.log(rep);
+      await this.contentMod.reviewContent(req.body.username, "username");
+      // const rep = await this.userService.AddUser(req.body);
+      // console.log(rep);
       return res.json({ message: "user created" });
     } catch (error) {
       console.log(error);
@@ -83,6 +87,7 @@ export default class UserController {
           .status(400)
           .json({ message: "you're not allowed to edit this user" });
       }
+      await this.contentMod.reviewContent(req.body.username, "username");
       req.body["id"] = req.params.id;
       const genPass = this.userAuth.genPassword(req.body.password);
       req.body.password = genPass;
