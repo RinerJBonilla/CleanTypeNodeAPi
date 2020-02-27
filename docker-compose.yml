@@ -12,6 +12,8 @@ services:
       - D_DATABASE=${D_DATABASE}
       - D_DBPORT=${D_DBPORT}
       - MYSQL_HOST=${MYSQL_HOST}
+      - API_USER=${API_USER}
+      - API_SECRET=${API_SECRET}
     ports:
       - "3001:3001"
     depends_on:
