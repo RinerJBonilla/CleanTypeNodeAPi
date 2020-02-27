@@ -45,8 +45,8 @@ export default class UserController {
       const genPass = this.userAuth.genPassword(req.body.password);
       req.body.password = genPass;
       await this.contentMod.reviewContent(req.body.username, "username");
-      // const rep = await this.userService.AddUser(req.body);
-      // console.log(rep);
+      const rep = await this.userService.AddUser(req.body);
+      console.log(rep);
       return res.json({ message: "user created" });
     } catch (error) {
       console.log(error);
