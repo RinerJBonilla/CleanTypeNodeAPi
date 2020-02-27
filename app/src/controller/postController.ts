@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
 import PostUseCase from "../use-cases/posts/postUseCase";
+import ContentMod from "../utils/ContentMod";
 
 export default class PostController {
   private postService: PostUseCase;
+  private contentMod: ContentMod;
 
   constructor(postService: PostUseCase) {
     this.postService = postService;
+    this.contentMod = new ContentMod();
   }
 
   getPost = async (req: Request, res: Response) => {
@@ -34,6 +37,10 @@ export default class PostController {
       //     message: "ACCESS DENIED: can't create a post with selected user"
       //   });
       // }
+      await this.contentMod.reviewContent(
+        req.body.title + ", " + req.body.description + ", " + req.body.content,
+        "standard"
+      );
       req.body["userid"] = res.locals.payload.id;
       const rep = await this.postService.AddPost(req.body);
       console.log(rep);
@@ -81,6 +88,10 @@ export default class PostController {
       // }
       req.body["id"] = req.params.id;
       req.body["userid"] = res.locals.payload.id;
+      await this.contentMod.reviewContent(
+        req.body.title + ", " + req.body.description + ", " + req.body.content,
+        "standard"
+      );
       const rep = await this.postService.editPost(req.body);
       return res.json({ message: "post updated" });
     } catch (error) {
@@ -132,6 +143,10 @@ export default class PostController {
         });
       }
       req.body["id"] = req.params.id;
+      await this.contentMod.reviewContent(
+        req.body.title + ", " + req.body.description + ", " + req.body.content,
+        "standard"
+      );
       const rep = await this.postService.editMyPost(
         req.body,
         res.locals.payload.id

@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
 import CommentUseCase from "../use-cases/comments/commentUseCase";
+import ContentMod from "../utils/ContentMod";
 
 export default class CommentController {
   private commentService: CommentUseCase;
+  private contentMod: ContentMod;
 
   constructor(postService: CommentUseCase) {
     this.commentService = postService;
+    this.contentMod = new ContentMod();
   }
 
   getComment = async (req: Request, res: Response) => {
@@ -51,6 +54,7 @@ export default class CommentController {
         userid: res.locals.payload.id,
         postid: req.params.id
       };
+      await this.contentMod.reviewContent(req.body.message, "standard");
       const rep = await this.commentService.AddComment(mess);
       console.log(rep);
       return res.json({ message: "comment created" });
@@ -68,6 +72,7 @@ export default class CommentController {
         postid: req.params.id,
         id: req.params.commentid
       };
+      await this.contentMod.reviewContent(req.body.message, "standard");
       const rep = await this.commentService.EditMyComment(mess);
       console.log(rep);
       return res.json({ message: "comment updated" });
