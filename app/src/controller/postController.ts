@@ -30,13 +30,6 @@ export default class PostController {
   createPost = async (req: Request, res: Response) => {
     console.log("controller: ", req.body);
     try {
-      // if (res.locals.payload.id !== Number(req.body.userid)) {
-      //   console.log(res.locals.payload.id);
-      //   console.log(Number(req.body.userid));
-      //   return res.status(400).json({
-      //     message: "ACCESS DENIED: can't create a post with selected user"
-      //   });
-      // }
       await this.contentMod.reviewContent(
         req.body.title + ", " + req.body.description + ", " + req.body.content,
         "standard"
@@ -53,11 +46,6 @@ export default class PostController {
 
   deletePost = async (req: Request, res: Response): Promise<Response> => {
     try {
-      // if (res.locals.payload.id !== Number(req.body.userid)) {
-      //   return res.status(400).json({
-      //     message: "ACCESS DENIED: can't delete this post with your credentials"
-      //   });
-      // }
       const rep = await this.postService.removePost(
         req.params.id,
         res.locals.payload.id
@@ -81,11 +69,6 @@ export default class PostController {
 
   updatePosts = async (req: Request, res: Response): Promise<Response> => {
     try {
-      // if (res.locals.payload.id !== Number(req.body.userid)) {
-      //   return res.status(400).json({
-      //     message: "ACCESS DENIED: can't update this post with your credentials"
-      //   });
-      // }
       req.body["id"] = req.params.id;
       req.body["userid"] = res.locals.payload.id;
       await this.contentMod.reviewContent(
