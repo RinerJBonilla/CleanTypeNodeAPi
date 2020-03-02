@@ -48,6 +48,28 @@ export default class DConnetion {
     return this.connectionPool;
   }
 
+  QBatch(qry: string, params?: Object[]): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        if (!this.connectionPool) {
+          throw "Connection pool not stablished";
+        }
+
+        const rows = await this.connectionPool.batch(
+          {
+            sql: qry,
+            namedPlaceholders: true
+          },
+          params
+        );
+
+        resolve(rows);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
   Query(qry: string, params?: Object): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
