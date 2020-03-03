@@ -37,7 +37,7 @@ export default class PostController {
       req.body["userid"] = res.locals.payload.id;
       const rep = await this.postService.AddPost(req.body);
       console.log(rep);
-      return res.json({ message: "post created" });
+      return res.json({ message: "post created", id: rep });
     } catch (error) {
       console.log("in controller", error);
       return res.status(500).send({ message: error.message });
