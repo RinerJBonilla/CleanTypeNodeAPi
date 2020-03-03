@@ -46,6 +46,11 @@ export default class TagController {
 
   createTags = async (req: Request, res: Response) => {
     try {
+      let check: string = "";
+      for (var i = 0; i < req.body.length; i++) {
+        check = check.concat(req.body[i].name, ",");
+      }
+      await this.contentMod.reviewContent(check, "standard");
       const rep = await this.tagService.AddTags(
         req.body,
         res.locals.payload.id,

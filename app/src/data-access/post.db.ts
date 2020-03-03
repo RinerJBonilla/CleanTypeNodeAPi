@@ -81,6 +81,21 @@ export default class Postdb {
     });
   }
 
+  getPostsByTag(tag: string): Promise<Post[]> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const posts: Post[] = await this.conn.Query(
+          "select posts.title, posts.description, posts.id from posts inner join tags where tags.postid = posts.id and tags.name = :tag",
+          { tag }
+        );
+        resolve(posts);
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
+    });
+  }
+
   async getPost(postId: number): Promise<PostData> {
     try {
       const qry = `
