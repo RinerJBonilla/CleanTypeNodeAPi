@@ -22,6 +22,11 @@ import CommentUseCase from "./use-cases/comments/commentUseCase";
 import CommentController from "./controller/commentController";
 import CommentRouter from "./routes/comment.routes";
 
+import Tagdb from "./data-access/tag.db";
+import TagUseCase from "./use-cases/tags/tagUseCase";
+import TagController from "./controller/tagController";
+import TagRouter from "./routes/tag.routes";
+
 export class App {
   public app: Application;
   constructor() {
@@ -69,9 +74,17 @@ export class App {
 
     const commentRouter: CommentRouter = new CommentRouter(commentController);
 
+    //Tags
+    const tagDb: Tagdb = new Tagdb(dConnection);
+    const tagUseCase: TagUseCase = new TagUseCase(tagDb);
+    const tagController: TagController = new TagController(tagUseCase);
+
+    const tagRouter: TagRouter = new TagRouter(tagController);
+
     this.app.use(postRouter.getRoutes());
     this.app.use(userRouter.getRoutes());
     this.app.use(commentRouter.getRoutes());
+    this.app.use(tagRouter.getRoutes());
   }
 
   async listen() {
