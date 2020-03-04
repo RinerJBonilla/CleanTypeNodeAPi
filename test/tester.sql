@@ -105,6 +105,22 @@ VALUES
 UNLOCK TABLES;
 
 
+# Dump of table tags
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `tags`;
+
+CREATE TABLE `tags` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) DEFAULT NULL,
+  `color` varchar(15) DEFAULT NULL,
+  `postid` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `postid` (`postid`),
+  CONSTRAINT `tags_ibfk_1` FOREIGN KEY (`postid`) REFERENCES `posts` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+
 # Dump of table users
 # ------------------------------------------------------------
 

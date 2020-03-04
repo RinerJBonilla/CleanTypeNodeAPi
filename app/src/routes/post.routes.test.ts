@@ -143,4 +143,14 @@ describe("Post Routes", () => {
     expect(res.status).toBe(200);
     expect(res.body.message).toEqual("post deleted");
   });
+
+  test("should bring al 0 post with tag food", async () => {
+    const res = await request(app.app)
+      .get("/searchBy/food")
+      .set({
+        authtoken: process.env.T_D_TOKEN ? process.env.T_D_TOKEN : "bla"
+      });
+    expect(res.status).toEqual(200);
+    expect(res.body).toHaveLength(0);
+  });
 });

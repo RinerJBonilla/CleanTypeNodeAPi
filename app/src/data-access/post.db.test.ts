@@ -49,4 +49,9 @@ describe("Post DB", () => {
     const post = await pDB.getPost(1);
     expect(post).toBeFalsy();
   });
+
+  test("should bring all 0 posts with tag", async () => {
+    const post = await pDB.getPostsByTag("food");
+    expect(post).toHaveLength(0);
+  });
 });

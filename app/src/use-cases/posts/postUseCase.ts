@@ -42,6 +42,17 @@ export default class PostUseCase {
     }
   }
 
+  async BringPostsByTag(tag: any) {
+    try {
+      const posts = await this.db.getPostsByTag(tag);
+
+      return posts;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
   async BringMyPost(postId: any, userId: any) {
     try {
       if (!postId) {

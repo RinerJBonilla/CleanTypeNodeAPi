@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import PostUseCase from "../use-cases/posts/postUseCase";
 import ContentMod from "../utils/ContentMod";
+import { TokenExpiredError } from "jsonwebtoken";
 
 export default class PostController {
   private postService: PostUseCase;
@@ -37,7 +38,7 @@ export default class PostController {
       req.body["userid"] = res.locals.payload.id;
       const rep = await this.postService.AddPost(req.body);
       console.log(rep);
-      return res.json({ message: "post created" });
+      return res.json({ message: "post created", id: rep });
     } catch (error) {
       console.log("in controller", error);
       return res.status(500).send({ message: error.message });
@@ -96,6 +97,16 @@ export default class PostController {
   getMyPosts = async (req: Request, res: Response): Promise<Response> => {
     try {
       const rep = await this.postService.BringAllMyPost(req.params.userid);
+      return res.json(rep);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send({ message: error.message });
+    }
+  };
+
+  getPostsByTag = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const rep = await this.postService.BringPostsByTag(req.params.tag);
       return res.json(rep);
     } catch (error) {
       console.log(error);

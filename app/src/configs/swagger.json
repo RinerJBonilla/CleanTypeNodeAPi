@@ -72,6 +72,40 @@
         ]
       }
     },
+    "/searchBy/{tag}": {
+      "get": {
+        "tags": ["Posts"],
+        "summary": "find post by Tag",
+        "description": "Returns found post",
+        "operationId": "getPostById",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "tag",
+            "in": "path",
+            "description": "tag to filter posts",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/Posts"
+            }
+          },
+          "400": {
+            "description": "posts not found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
     "/posts/{postId}": {
       "get": {
         "tags": ["Posts"],
@@ -725,6 +759,161 @@
           }
         ]
       }
+    },
+    "/tags": {
+      "get": {
+        "tags": ["Tags"],
+        "summary": " Get All Tags",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Tags"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/tags/{tagName}": {
+      "get": {
+        "tags": ["Tags"],
+        "summary": "find tag By Name",
+        "description": "Returns found tag",
+        "operationId": "getTagByName",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "tagName",
+            "in": "path",
+            "description": "Name of the Tag",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Tag"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/posts/{postId}/tags": {
+      "get": {
+        "tags": ["Post's Tags"],
+        "summary": "find Posts tags",
+        "description": "Returns found tag",
+        "operationId": "getTagByName",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "description": "Id of the Post",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Tags"
+            }
+          },
+          "500": {
+            "description": "post not found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Post's Tags"],
+        "summary": "Create tags",
+        "description": "",
+        "operationId": "addTags",
+        "cosunmes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "description": "Id of the Post",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Create tags for your post",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PostTags"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tags created"
+          },
+          "500": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Post's Tags"],
+        "summary": "Delete tags",
+        "description": "",
+        "operationId": "addTags",
+        "cosunmes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Delete a set of tags from your post",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Tags"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tags deleted"
+          },
+          "500": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
     }
   },
   "securityDefinitions": {
@@ -868,6 +1057,59 @@
       "type": "array",
       "items": {
         "$ref": "#/definitions/CommentInfo"
+      }
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "PostTag": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "RemoveTag": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number"
+        }
+      }
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "PostTags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PostTag"
+      }
+    },
+    "RemovedTags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/RemoveTag"
       }
     }
   }

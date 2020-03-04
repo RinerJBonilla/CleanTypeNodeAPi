@@ -110,4 +110,9 @@ describe("Post use case", () => {
       "user does not exist"
     );
   });
+
+  test("should bring all 0 posts with tag food", async () => {
+    const res = await postUseCase.BringPostsByTag("food");
+    expect(res).toHaveLength(0);
+  });
 });
