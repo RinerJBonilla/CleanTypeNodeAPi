@@ -10,7 +10,7 @@ export default class TagRouter {
 
     this.router.route("/tags").get(VerifyToken, tagController.getTags);
 
-    this.router.route("/tags/:id").get(VerifyToken, tagController.getTag);
+    this.router.route("/tags/:name").get(VerifyToken, tagController.getTag);
 
     this.router
       .route("/posts/:id/tags")

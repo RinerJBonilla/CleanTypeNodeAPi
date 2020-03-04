@@ -118,9 +118,9 @@ export default class Tagdb {
     console.log("db access: ", name);
     try {
       const qry = `
-          SELECT 
-            id,
+          SELECT DISTINCT
             name,
+            id,
             color,
             postid
            FROM tags 

@@ -13,7 +13,7 @@ export default class TagController {
 
   getTag = async (req: Request, res: Response) => {
     try {
-      const tag = await this.tagService.BringTag(req.params.id);
+      const tag = await this.tagService.BringTag(req.params.name);
       if (!tag) {
         return res.status(200).json({ message: "tag not found" });
       }
