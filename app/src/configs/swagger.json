@@ -159,7 +159,7 @@
             "description": "edit post for your blog",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/PostData"
+              "$ref": "#/definitions/UpdateData"
             }
           }
         ],
@@ -407,134 +407,6 @@
             "schema": {
               "$ref": "#/definitions/Posts"
             }
-          }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ]
-      }
-    },
-    "/users/{userId}/posts/{postId}": {
-      "get": {
-        "tags": ["User's posts"],
-        "summary": "find a user's post by ID",
-        "description": "Returns found User's post",
-        "operationId": "getMyPostById",
-        "produces": ["application/json"],
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "description": "ID of user who owns said posts",
-            "required": true,
-            "type": "integer"
-          },
-          {
-            "name": "postId",
-            "in": "path",
-            "description": "ID of the post",
-            "required": true,
-            "type": "integer"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "success",
-            "schema": {
-              "$ref": "#/definitions/PostInfo"
-            }
-          },
-          "400": {
-            "description": "post not found"
-          }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ]
-      },
-      "put": {
-        "tags": ["User's posts"],
-        "summary": "edit user's post by ID",
-        "description": "Returns validation message",
-        "operationId": "editMyPost",
-        "produces": ["application/json"],
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "description": "ID of user who owns said post",
-            "required": true,
-            "type": "integer"
-          },
-          {
-            "name": "postId",
-            "in": "path",
-            "description": "ID of post to update",
-            "required": true,
-            "type": "integer"
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "description": "edit post for your blog",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/Post"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "post updated"
-          },
-          "400": {
-            "description": "ACCESS DENIED: can't update this post with your credentials"
-          },
-          "500": {
-            "description": "user does not own this post"
-          }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ]
-      },
-      "delete": {
-        "tags": ["User's posts"],
-        "summary": "delete user's post by ID",
-        "description": "Returns validation message",
-        "operationId": "deleteMyPost",
-        "produces": ["application/json"],
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "description": "ID of user who owns said post",
-            "required": true,
-            "type": "integer"
-          },
-          {
-            "name": "postId",
-            "in": "path",
-            "description": "ID of post to update",
-            "required": true,
-            "type": "integer"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "post deleted"
-          },
-          "400": {
-            "description": "ACCESS DENIED: can't delete this post with your credentials"
-          },
-          "500": {
-            "description": "user does not own this post"
           }
         },
         "security": [
@@ -980,6 +852,34 @@
         },
         "content": {
           "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "required": false,
+          "items": {
+            "$ref": "#/definitions/PostTag"
+          }
+        }
+      }
+    },
+    "UpdateData": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "required": false,
+          "items": {
+            "$ref": "#/definitions/RemoveTag"
+          }
         }
       }
     },
