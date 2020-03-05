@@ -29,12 +29,6 @@ export default class PostRouter {
       .get(VerifyToken, postController.getMyPosts);
 
     this.router
-      .route("/users/:userid/posts/:id")
-      .get(VerifyToken, postController.getMyPost)
-      .put(VerifyToken, postController.editMyPost)
-      .delete(VerifyToken, postController.deleteMyPost);
-
-    this.router
       .route("/searchBy/:tag")
       .get(VerifyToken, postController.getPostsByTag);
   }
