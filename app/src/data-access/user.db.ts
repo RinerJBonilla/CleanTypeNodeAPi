@@ -30,7 +30,7 @@ export default class Userdb {
     return new Promise(async (resolve, reject) => {
       try {
         const users: User[] = await this.conn.Query(
-          "select id, username from users"
+          "select id, username from users where deleted = 1"
         );
 
         resolve(users);
@@ -49,7 +49,7 @@ export default class Userdb {
         id,
         username
        FROM users 
-      WHERE id = :userId`;
+      WHERE id = :userId and deleted = 1`;
 
       const users = await this.conn.Query(qry, { userId });
       return users[0];
@@ -68,7 +68,7 @@ export default class Userdb {
         username,
         password
        FROM users 
-      WHERE username = :username`;
+      WHERE username = :username and deleted = 1`;
 
       const users = await this.conn.Query(qry, { username });
       if (users[0]) {
@@ -85,7 +85,7 @@ export default class Userdb {
   async putUser(eUser: User): Promise<User> {
     try {
       const users = await this.conn.Query(
-        `update users set username = :username, password = :password where id = :id`,
+        `update users set username = :username, password = :password where id = :id and deleted = 1`,
         eUser
       );
 
@@ -99,7 +99,7 @@ export default class Userdb {
   async deleteUser(userId: number): Promise<any> {
     try {
       const users = await this.conn.Query(
-        "delete from users where id = :userId",
+        "update users set deleted = 0 where id = :userId",
         { userId }
       );
       console.log(users);
