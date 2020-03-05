@@ -51,7 +51,7 @@ export default class Tagdb {
       SELECT 
         id
        FROM posts 
-      WHERE id = :postId`;
+      WHERE id = :postId and deleted = 1`;
 
       const posts = await this.conn.Query(qry, { postId });
       if (posts[0]) {
@@ -72,7 +72,7 @@ export default class Tagdb {
       SELECT 
         id
        FROM posts 
-      WHERE id = :postd and userid = :userid`;
+      WHERE id = :postd and userid = :userid and deleted = 1`;
       const posts = await this.conn.Query(qry, { postd, userid });
       if (posts[0]) {
         return true;
@@ -176,6 +176,23 @@ export default class Tagdb {
       const tags = await this.conn.QBatch(
         "delete from tags where id = :tagId and postid = :postId",
         tagIds
+      );
+      console.log(tags);
+      if (tags.affectedRows === 0) {
+        throw Error("post does not exist");
+      }
+      return tags;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  async deleteMyTags(postid: any): Promise<any> {
+    try {
+      const tags = await this.conn.Query(
+        "delete from tags where postid = :postid",
+        { postid }
       );
       console.log(tags);
       if (tags.affectedRows === 0) {

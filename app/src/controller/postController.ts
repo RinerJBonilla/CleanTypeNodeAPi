@@ -92,6 +92,10 @@ export default class PostController {
 
   deletePost = async (req: Request, res: Response): Promise<Response> => {
     try {
+      const rew = await this.tagService.removeAllMyTags(
+        req.params.id,
+        res.locals.payload.id
+      );
       const rep = await this.postService.removePost(
         req.params.id,
         res.locals.payload.id
@@ -145,7 +149,7 @@ export default class PostController {
       }
       const rep = await this.postService.editPost(req.body);
 
-      if (req.body.createtags) {
+      if (req.body.createtags && req.body.createtags.length > 0) {
         const rex = await this.tagService.AddTags(
           req.body.createtags,
           res.locals.payload.id,
@@ -154,7 +158,7 @@ export default class PostController {
         console.log(rex);
       }
 
-      if (req.body.removetags) {
+      if (req.body.removetags && req.body.removetags.length > 0) {
         const rez = await this.tagService.RemoveTags(
           req.body.removetags,
           res.locals.payload.id,
