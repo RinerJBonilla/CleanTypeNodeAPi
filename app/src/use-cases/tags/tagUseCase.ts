@@ -81,6 +81,7 @@ export default class TagUseCase {
         throw Error("cant remove tags to this post");
       }
       let tagg = [];
+      console.log("DEL 2", tags);
       for (var i = 0; i < tags.length; i++) {
         let check = { tagId: tags[i].id, postId: postid };
         tagg.push(check);

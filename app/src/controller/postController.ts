@@ -1,14 +1,16 @@
 import { Request, Response } from "express";
 import PostUseCase from "../use-cases/posts/postUseCase";
+import TagUseCase from "../use-cases/tags/tagUseCase";
 import ContentMod from "../utils/ContentMod";
-import { TokenExpiredError } from "jsonwebtoken";
 
 export default class PostController {
   private postService: PostUseCase;
+  private tagService: TagUseCase;
   private contentMod: ContentMod;
 
-  constructor(postService: PostUseCase) {
+  constructor(postService: PostUseCase, tagService: TagUseCase) {
     this.postService = postService;
+    this.tagService = tagService;
     this.contentMod = new ContentMod();
   }
 
@@ -21,7 +23,17 @@ export default class PostController {
       if (!post) {
         return res.status(400).json({ message: "post not found" });
       }
-      return res.json(post);
+
+      const tags = await this.tagService.BringMyTags(postId);
+
+      return res.json({
+        id: post.id,
+        title: post.title,
+        description: post.description,
+        content: post.content,
+        username: post.username,
+        tags: tags ? tags : []
+      });
     } catch (error) {
       console.log(error);
       return res.status(500).json({ message: error.message });
@@ -31,12 +43,45 @@ export default class PostController {
   createPost = async (req: Request, res: Response) => {
     console.log("controller: ", req.body);
     try {
-      await this.contentMod.reviewContent(
-        req.body.title + ", " + req.body.description + ", " + req.body.content,
-        "standard"
-      );
+      if (!req.body.tags || req.body.tags.length === 0) {
+        await this.contentMod.reviewContent(
+          req.body.title +
+            ", " +
+            req.body.description +
+            ", " +
+            req.body.content,
+          "standard"
+        );
+      } else {
+        let check: string = "";
+        for (var i = 0; i < req.body.tags.length; i++) {
+          check = check.concat(req.body.tags[i].name, ",");
+        }
+        await this.contentMod.reviewContent(
+          req.body.title +
+            ", " +
+            req.body.description +
+            ", " +
+            req.body.content +
+            ", " +
+            check,
+          "standard"
+        );
+      }
       req.body["userid"] = res.locals.payload.id;
       const rep = await this.postService.AddPost(req.body);
+
+      if (!req.body.tags || req.body.tags.length === 0) {
+        return res.json({ message: "post created", id: rep });
+      }
+      //tags
+      const rex = await this.tagService.AddTags(
+        req.body.tags,
+        res.locals.payload.id,
+        rep.id
+      );
+
+      console.log(rex);
       console.log(rep);
       return res.json({ message: "post created", id: rep });
     } catch (error) {
@@ -72,11 +117,52 @@ export default class PostController {
     try {
       req.body["id"] = req.params.id;
       req.body["userid"] = res.locals.payload.id;
-      await this.contentMod.reviewContent(
-        req.body.title + ", " + req.body.description + ", " + req.body.content,
-        "standard"
-      );
+
+      if (!req.body.createtags || req.body.createtags.length === 0) {
+        await this.contentMod.reviewContent(
+          req.body.title +
+            ", " +
+            req.body.description +
+            ", " +
+            req.body.content,
+          "standard"
+        );
+      } else {
+        let check: string = "";
+        for (var i = 0; i < req.body.createtags.length; i++) {
+          check = check.concat(req.body.createtags[i].name, ",");
+        }
+        await this.contentMod.reviewContent(
+          req.body.title +
+            ", " +
+            req.body.description +
+            ", " +
+            req.body.content +
+            ", " +
+            check,
+          "standard"
+        );
+      }
       const rep = await this.postService.editPost(req.body);
+
+      if (req.body.createtags) {
+        const rex = await this.tagService.AddTags(
+          req.body.createtags,
+          res.locals.payload.id,
+          req.params.id
+        );
+        console.log(rex);
+      }
+
+      if (req.body.removetags) {
+        const rez = await this.tagService.RemoveTags(
+          req.body.removetags,
+          res.locals.payload.id,
+          req.params.id
+        );
+        console.log(rez);
+      }
+
       return res.json({ message: "post updated" });
     } catch (error) {
       console.log(error);
