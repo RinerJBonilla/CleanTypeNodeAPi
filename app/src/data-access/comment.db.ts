@@ -34,7 +34,7 @@ export default class Commentdb {
       SELECT 
         id
        FROM users 
-      WHERE id = :userId`;
+      WHERE id = :userId and deleted = 1`;
 
       const posts = await this.conn.Query(qry, { userId });
       if (posts[0]) {
@@ -55,7 +55,7 @@ export default class Commentdb {
       SELECT 
         id
        FROM posts 
-      WHERE id = :postId`;
+      WHERE id = :postId and deleted = 1`;
 
       const posts = await this.conn.Query(qry, { postId });
       if (posts[0]) {
@@ -73,7 +73,7 @@ export default class Commentdb {
     return new Promise(async (resolve, reject) => {
       try {
         const comments: Comment[] = await this.conn.Query(
-          "select id, message, postid, userid from comments"
+          "select id, message, postid, userid from comments where deleted = 1"
         );
         resolve(comments);
       } catch (error) {
@@ -87,7 +87,7 @@ export default class Commentdb {
     return new Promise(async (resolve, reject) => {
       try {
         const comments: CommentUser[] = await this.conn.Query(
-          "select comments.id, comments.message, users.username from comments inner join users on users.id = comments.userid where comments.postid = :postid",
+          "select comments.id, comments.message, users.username from comments inner join users on users.id = comments.userid where comments.postid = :postid and comments.deleted = 1",
           { postid }
         );
         resolve(comments);
@@ -108,7 +108,7 @@ export default class Commentdb {
             userid,
             postid
            FROM comments 
-          WHERE id = :commentId`;
+          WHERE id = :commentId and deleted = 1`;
 
       const comment = await this.conn.Query(qry, { commentId });
       return comment[0];
@@ -121,7 +121,7 @@ export default class Commentdb {
   async putComment(eComment: Comment): Promise<Comment> {
     try {
       const comments = await this.conn.Query(
-        `update comments set message = :message where id = :id and userid = :userid`,
+        `update comments set message = :message where id = :id and userid = :userid and deleted = 1`,
         eComment
       );
       console.log(comments);
@@ -138,7 +138,7 @@ export default class Commentdb {
   async deleteComment(commentId: number, userId: number): Promise<any> {
     try {
       const comments = await this.conn.Query(
-        "delete from comments where id = :commentId and userid = :userId",
+        "update comments set deleted = 0 where id = :commentId and userid = :userId",
         { commentId, userId }
       );
       console.log(comments);

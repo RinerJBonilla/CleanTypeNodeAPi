@@ -70,6 +70,23 @@ export default class TagUseCase {
     }
   }
 
+  async removeAllMyTags(postid: any, userid: any) {
+    try {
+      const ras = await this.db.findPostById(postid);
+      if (!ras) {
+        throw Error("post does not exist");
+      }
+      const res = await this.db.checkOwnershipOfPost(userid, postid);
+      if (!res) {
+        throw Error("cant remove tags to this post");
+      }
+      return this.db.deleteMyTags(postid);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
   async RemoveTags(tags: any[], userid: any, postid: any) {
     try {
       const ras = await this.db.findPostById(postid);
@@ -81,6 +98,7 @@ export default class TagUseCase {
         throw Error("cant remove tags to this post");
       }
       let tagg = [];
+      console.log("DEL 2", tags);
       for (var i = 0; i < tags.length; i++) {
         let check = { tagId: tags[i].id, postId: postid };
         tagg.push(check);

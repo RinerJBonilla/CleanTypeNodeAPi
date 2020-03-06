@@ -36,7 +36,7 @@ export default class Postdb {
       SELECT 
         id
        FROM users 
-      WHERE id = :userId`;
+      WHERE id = :userId and deleted = 1`;
 
       const posts = await this.conn.Query(qry, { userId });
       if (posts[0]) {
@@ -54,7 +54,7 @@ export default class Postdb {
     return new Promise(async (resolve, reject) => {
       try {
         const posts: Post[] = await this.conn.Query(
-          "select id, title, description, content, userid from posts"
+          "select id, title, description, content, userid from posts where deleted = 1"
         );
 
         resolve(posts);
@@ -69,7 +69,7 @@ export default class Postdb {
     return new Promise(async (resolve, reject) => {
       try {
         const posts: Post[] = await this.conn.Query(
-          "select id, title, description, content, userid from posts where userid= :userid",
+          "select id, title, description, content, userid from posts where userid= :userid and deleted = 1",
           { userid }
         );
 
@@ -85,7 +85,7 @@ export default class Postdb {
     return new Promise(async (resolve, reject) => {
       try {
         const posts: Post[] = await this.conn.Query(
-          "select posts.title, posts.description, posts.id from posts inner join tags where tags.postid = posts.id and tags.name = :tag",
+          "select posts.title, posts.description, posts.id from posts inner join tags where tags.postid = posts.id and tags.name = :tag and posts.deleted = 1",
           { tag }
         );
         resolve(posts);
@@ -99,7 +99,7 @@ export default class Postdb {
   async getPost(postId: number): Promise<PostData> {
     try {
       const qry = `
-      select users.username, posts.description, posts.title, posts.content, posts.id from posts inner join users on posts.userid = users.id where posts.id = :postId`;
+      select users.username, posts.description, posts.title, posts.content, posts.id from posts inner join users on posts.userid = users.id where posts.id = :postId and posts.deleted = 1`;
 
       const posts: PostData[] = await this.conn.Query(qry, { postId });
       return posts[0];
@@ -112,7 +112,7 @@ export default class Postdb {
   async getMyPost(postId: number, userId: number): Promise<PostData> {
     try {
       const qry = `
-      select users.username, posts.description, posts.title, posts.content, posts.id from posts inner join users on posts.userid = users.id where posts.id = :userId`;
+      select users.username, posts.description, posts.title, posts.content, posts.id from posts inner join users on posts.userid = users.id where posts.id = :userId and posts.deleted = 1`;
 
       const posts: PostData[] = await this.conn.Query(qry, { postId, userId });
       return posts[0];
@@ -125,7 +125,7 @@ export default class Postdb {
   async putPost(ePost: Post): Promise<Post> {
     try {
       const posts = await this.conn.Query(
-        `update posts set title = :title, description = :description, content = :content where id = :id and userid = :userid`,
+        `update posts set title = :title, description = :description, content = :content where id = :id and userid = :userid and deleted = 1`,
         ePost
       );
       console.log(posts);
@@ -143,7 +143,7 @@ export default class Postdb {
   async deletePost(postId: number, userId: number): Promise<any> {
     try {
       const posts = await this.conn.Query(
-        "delete from posts where id = :postId and userid = :userId",
+        "update posts set deleted = 0 where id = :postId and userid = :userId",
         { postId, userId }
       );
       console.log(posts);

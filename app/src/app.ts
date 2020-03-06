@@ -50,11 +50,22 @@ export class App {
   }
 
   routes() {
-    //Posts
     const dConnection: DConnection = new DConnection();
+
+    //Tags
+    const tagDb: Tagdb = new Tagdb(dConnection);
+    const tagUseCase: TagUseCase = new TagUseCase(tagDb);
+    const tagController: TagController = new TagController(tagUseCase);
+
+    const tagRouter: TagRouter = new TagRouter(tagController);
+
+    //Posts
     const postDb: Postdb = new Postdb(dConnection);
     const postUseCase: PostUseCase = new PostUseCase(postDb);
-    const postController: PostController = new PostController(postUseCase);
+    const postController: PostController = new PostController(
+      postUseCase,
+      tagUseCase
+    );
 
     const postRouter: PostRouter = new PostRouter(postController);
 
@@ -73,13 +84,6 @@ export class App {
     );
 
     const commentRouter: CommentRouter = new CommentRouter(commentController);
-
-    //Tags
-    const tagDb: Tagdb = new Tagdb(dConnection);
-    const tagUseCase: TagUseCase = new TagUseCase(tagDb);
-    const tagController: TagController = new TagController(tagUseCase);
-
-    const tagRouter: TagRouter = new TagRouter(tagController);
 
     this.app.use(postRouter.getRoutes());
     this.app.use(userRouter.getRoutes());

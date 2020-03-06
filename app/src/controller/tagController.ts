@@ -66,6 +66,7 @@ export default class TagController {
 
   deleteTags = async (req: Request, res: Response): Promise<Response> => {
     try {
+      console.log("DEL", req.body);
       const rep = await this.tagService.RemoveTags(
         req.body,
         res.locals.payload.id,

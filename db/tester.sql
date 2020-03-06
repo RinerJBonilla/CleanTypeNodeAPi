@@ -30,6 +30,7 @@ CREATE TABLE `comments` (
   `message` varchar(1024) DEFAULT NULL,
   `userid` int(11) NOT NULL,
   `postid` int(11) NOT NULL,
+  `deleted` BOOL DEFAULT 1,
   PRIMARY KEY (`id`),
   KEY `userid` (`userid`),
   KEY `postid` (`postid`),
@@ -79,6 +80,7 @@ CREATE TABLE `posts` (
   `title` varchar(50) DEFAULT NULL,
   `description` varchar(50) DEFAULT NULL,
   `content` varchar(10000) DEFAULT NULL,
+  `deleted` BOOL DEFAULT 1,
   PRIMARY KEY (`id`),
   KEY `userid` (`userid`),
   CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `users` (`id`)
@@ -129,6 +131,7 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) DEFAULT NULL,
   `password` varchar(1024) DEFAULT NULL,
+  `deleted` BOOL DEFAULT 1,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
