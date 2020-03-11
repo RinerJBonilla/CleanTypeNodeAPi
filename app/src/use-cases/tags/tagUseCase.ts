@@ -74,15 +74,15 @@ export default class TagUseCase {
     try {
       const ras = await this.db.findPostById(postid);
       if (!ras) {
-        throw Error("post does not exist");
+        throw Error("post does not exist on tags");
       }
       const res = await this.db.checkOwnershipOfPost(userid, postid);
       if (!res) {
-        throw Error("cant remove tags to this post");
+        throw Error("cant remove tags to this post in tags");
       }
       return this.db.deleteMyTags(postid);
     } catch (error) {
-      console.log(error);
+      console.log("tags error:", error);
       throw error;
     }
   }

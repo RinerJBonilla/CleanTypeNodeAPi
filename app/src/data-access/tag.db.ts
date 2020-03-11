@@ -195,9 +195,6 @@ export default class Tagdb {
         { postid }
       );
       console.log(tags);
-      if (tags.affectedRows === 0) {
-        throw Error("post does not exist");
-      }
       return tags;
     } catch (error) {
       console.log(error);
