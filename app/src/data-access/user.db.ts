@@ -63,12 +63,7 @@ export default class Userdb {
     console.log("db access: ", username);
     try {
       const qry = `
-      SELECT 
-        id,
-        username,
-        password
-       FROM users 
-      WHERE username = :username and deleted = 1`;
+      SELECT id, username, password FROM users WHERE username = :username and deleted = 1`;
 
       const users = await this.conn.Query(qry, { username });
       if (users[0]) {

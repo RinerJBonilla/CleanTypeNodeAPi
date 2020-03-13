@@ -70,6 +70,22 @@ export default class UserController {
     }
   };
 
+  getUserByUsername = async (req: Request, res: Response) => {
+    try {
+      console.log("in get user with: ", req.params.username);
+
+      const userName = req.params.username;
+      const user = await this.userService.FindUser(userName);
+      if (!user) {
+        return res.status(400).json({ message: "user not found" });
+      }
+      return res.json({ id: user.id, username: user.username });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: error.message });
+    }
+  };
+
   getUsers = async (req: Request, res: Response): Promise<Response> => {
     try {
       const rep = await this.userService.BringAllUsers();

@@ -31,6 +31,17 @@ describe("User Routes", () => {
     expect(res.body.id).toBe(5);
   });
 
+  test("should bring user koko", async () => {
+    const res = await request(app.app)
+      .get("/user/koko")
+      .set({
+        authtoken: process.env.T_D_TOKEN ? process.env.T_D_TOKEN : "bla"
+      });
+    expect(res.status).toEqual(200);
+    expect(res.body.id).toBe(5);
+    expect(res.body.username).toEqual("koko");
+  });
+
   test("should send message of user not found", async () => {
     const res = await request(app.app)
       .get("/users/1")
