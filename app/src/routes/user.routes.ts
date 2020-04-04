@@ -15,6 +15,10 @@ export default class PostRouter {
     this.router.route("/users").get(verififyToken, userController.getUsers);
 
     this.router
+      .route("/user/:username")
+      .get(verififyToken, userController.getUserByUsername);
+
+    this.router
       .route("/users/:id")
       .get(verififyToken, userController.getUser)
       .put(verififyToken, userController.updateUser)

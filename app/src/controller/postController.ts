@@ -2,16 +2,19 @@ import { Request, Response } from "express";
 import PostUseCase from "../use-cases/posts/postUseCase";
 import TagUseCase from "../use-cases/tags/tagUseCase";
 import ContentMod from "../utils/ContentMod";
+import AlgoliaService from "../utils/AlgoliaService";
 
 export default class PostController {
   private postService: PostUseCase;
   private tagService: TagUseCase;
   private contentMod: ContentMod;
+  private algoliaService: AlgoliaService;
 
   constructor(postService: PostUseCase, tagService: TagUseCase) {
     this.postService = postService;
     this.tagService = tagService;
     this.contentMod = new ContentMod();
+    this.algoliaService = new AlgoliaService();
   }
 
   getPost = async (req: Request, res: Response) => {
@@ -83,7 +86,11 @@ export default class PostController {
 
       console.log(rex);
       console.log(rep);
-      return res.json({ message: "post created", id: rep });
+
+      //add post to Search engine
+      req.body["objectID"] = rep.id;
+      await this.algoliaService.savePost(req.body);
+      return res.json({ message: "post created", id: rep.id });
     } catch (error) {
       console.log("in controller", error);
       return res.status(500).send({ message: error.message });
@@ -100,6 +107,9 @@ export default class PostController {
         req.params.id,
         res.locals.payload.id
       );
+
+      //delete it on search engine
+      await this.algoliaService.deletePost(req.params.id);
       return res.json({ message: "post deleted", id: rep });
     } catch (error) {
       console.log(error);
@@ -166,6 +176,13 @@ export default class PostController {
         );
         console.log(rez);
       }
+
+      //update it on search engine
+      await this.algoliaService.updatePost({
+        objectID: req.params.id,
+        title: req.body.title,
+        description: req.body.description
+      });
 
       return res.json({ message: "post updated" });
     } catch (error) {
