@@ -10,12 +10,12 @@ the port on which the API will be running
 - TOKEN_SECRET:
 the token used to encrypt the user session token
 
-### SightEngine Credentials
+### SightEngine Credentials (content mod)
 
 - API_USER
 - API_SECRET
 
-### Algolia Credentials
+### Algolia Credentials (Search Engine)
 
 - ALGOLIA_CLI
 - ALGOLIA_PASS
